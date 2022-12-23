@@ -3,48 +3,59 @@ package com.mini.autorizador.mini.autorizador.service.impl;
 import com.mini.autorizador.mini.autorizador.domain.Cartao;
 import com.mini.autorizador.mini.autorizador.dto.CartaoDTO;
 import com.mini.autorizador.mini.autorizador.exceptions.CartaoInexistenteException;
-import com.mini.autorizador.mini.autorizador.repository.CartaoRepository;
+import com.mini.autorizador.mini.autorizador.exceptions.SaldoInsuficienteException;
 import com.mini.autorizador.mini.autorizador.service.CartaoService;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import java.util.Optional;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 @Service
 public class CartaoServiceImpl implements CartaoService {
 
-    @Autowired
-    private CartaoRepository repository;
+    private List<Cartao> cartoes = new ArrayList<>();
 
-    @Autowired
-    private ModelMapper mapper;
+    private ModelMapper mapper = new ModelMapper();
 
     @Override
     public ResponseEntity save(CartaoDTO cartaoDTO) {
 
-        Cartao cartao = mapper.map(cartaoDTO, Cartao.class);
+        ResponseEntity response = get(cartaoDTO.getNumeroCartao());
 
-        Optional<Cartao> optionalCartao = repository
-                .findCartaoByNumeroCartao(cartao.getNumeroCartao());
+        Cartao cartao = mapper.map(response.getBody(), Cartao.class);
 
-        if (optionalCartao.isPresent()) {
+        if (Objects.isNull(cartao)) {
             return new ResponseEntity(new CartaoInexistenteException(),
                     HttpStatus.UNPROCESSABLE_ENTITY);
         }
 
-        cartao = repository.save(cartao);
+        cartoes.add(cartao);
+
+        validarSaldo(cartao);
 
         return new ResponseEntity(cartao, HttpStatus.OK);
+    }
+    @Override
+    public ResponseEntity validarSaldo(Cartao cartao) {
+        if (cartao.getSaldo() <= 0) {
+            return new ResponseEntity(new SaldoInsuficienteException(),
+                    HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+          return null;
     }
 
     @Override
     public ResponseEntity get(String numCartao) {
-        Cartao cartao = repository.findCartaoByNumeroCartao(numCartao)
-                .stream().findAny()
+
+        Cartao cartao = cartoes.stream()
+                .filter(obj -> obj.getNumeroCartao().equals(numCartao))
+                .findAny()
                 .orElseThrow();
+
         return ResponseEntity.ok(cartao);
     }
 }

@@ -4,27 +4,27 @@ import com.mini.autorizador.mini.autorizador.domain.Cartao;
 import com.mini.autorizador.mini.autorizador.domain.Transacao;
 import com.mini.autorizador.mini.autorizador.dto.TransacaoDTO;
 import com.mini.autorizador.mini.autorizador.exceptions.CartaoInexistenteException;
-import com.mini.autorizador.mini.autorizador.repository.TransacaoRepository;
+import com.mini.autorizador.mini.autorizador.exceptions.SenhaInvalidaException;
 import com.mini.autorizador.mini.autorizador.service.CartaoService;
 import com.mini.autorizador.mini.autorizador.service.TransacaoService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Service
 public class TransacaoServiceImpl implements TransacaoService {
 
-    @Autowired
-    private TransacaoRepository repository;
+    private List<Transacao> transacaos = new ArrayList<>();
+    private ModelMapper mapper = new ModelMapper();
 
     @Autowired
     private CartaoService cartaoService;
-
-    @Autowired
-    private ModelMapper mapper;
 
     @Override
     public ResponseEntity save(TransacaoDTO transacaoDTO) {
@@ -36,12 +36,25 @@ public class TransacaoServiceImpl implements TransacaoService {
         Cartao cartao = mapper.map(responseEntity.getBody(), Cartao.class);
 
         if (Objects.nonNull(cartao)) {
+
+            if (transacao.getSenhaCartao().equals(cartao.getSenha())) {
+                return new ResponseEntity(new SenhaInvalidaException(),
+                        HttpStatus.UNPROCESSABLE_ENTITY);
+            }
+
             cartao.setSaldo(cartao.getSaldo() - transacaoDTO.getValor());
+
+            cartaoService.validarSaldo(cartao);
+
+            transacao.setCartao(cartao);
+
+            transacaos.add(transacao);
+
         } else {
-            throw new CartaoInexistenteException();
+            return new ResponseEntity(new CartaoInexistenteException(),
+                    HttpStatus.UNPROCESSABLE_ENTITY);
         }
 
-
-        return null;
+        return new ResponseEntity(transacao, HttpStatus.OK);
     }
 }
