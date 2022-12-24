@@ -7,7 +7,9 @@ import org.springframework.http.ResponseEntity;
 public interface CartaoService {
     ResponseEntity save(CartaoDTO cartaoDTO);
 
-    ResponseEntity get(String numCartao);
+    ResponseEntity getSaldo(String numCartao);
+
+    Cartao getCartao(String numCartao);
 
     ResponseEntity validarSaldo(Cartao cartao);
 }

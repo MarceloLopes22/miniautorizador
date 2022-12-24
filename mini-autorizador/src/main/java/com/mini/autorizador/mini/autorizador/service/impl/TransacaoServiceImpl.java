@@ -31,13 +31,11 @@ public class TransacaoServiceImpl implements TransacaoService {
 
         Transacao transacao = mapper.map(transacaoDTO, Transacao.class);
 
-        ResponseEntity responseEntity = cartaoService.get(transacaoDTO.getNumeroCartao());
-
-        Cartao cartao = mapper.map(responseEntity.getBody(), Cartao.class);
+        Cartao cartao = cartaoService.getCartao(transacaoDTO.getNumeroCartao());
 
         if (Objects.nonNull(cartao)) {
 
-            if (transacao.getSenhaCartao().equals(cartao.getSenha())) {
+            if (!transacao.getSenhaCartao().equals(cartao.getSenha())) {
                 return new ResponseEntity(new SenhaInvalidaException(),
                         HttpStatus.UNPROCESSABLE_ENTITY);
             }

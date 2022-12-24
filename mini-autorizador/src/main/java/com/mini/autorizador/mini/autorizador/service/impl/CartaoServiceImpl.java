@@ -2,7 +2,6 @@ package com.mini.autorizador.mini.autorizador.service.impl;
 
 import com.mini.autorizador.mini.autorizador.domain.Cartao;
 import com.mini.autorizador.mini.autorizador.dto.CartaoDTO;
-import com.mini.autorizador.mini.autorizador.exceptions.CartaoInexistenteException;
 import com.mini.autorizador.mini.autorizador.exceptions.SaldoInsuficienteException;
 import com.mini.autorizador.mini.autorizador.service.CartaoService;
 import org.modelmapper.ModelMapper;
@@ -24,14 +23,7 @@ public class CartaoServiceImpl implements CartaoService {
     @Override
     public ResponseEntity save(CartaoDTO cartaoDTO) {
 
-        ResponseEntity response = get(cartaoDTO.getNumeroCartao());
-
-        Cartao cartao = mapper.map(response.getBody(), Cartao.class);
-
-        if (Objects.isNull(cartao)) {
-            return new ResponseEntity(new CartaoInexistenteException(),
-                    HttpStatus.UNPROCESSABLE_ENTITY);
-        }
+        Cartao cartao = mapper.map(cartaoDTO, Cartao.class);
 
         cartoes.add(cartao);
 
@@ -41,7 +33,7 @@ public class CartaoServiceImpl implements CartaoService {
     }
     @Override
     public ResponseEntity validarSaldo(Cartao cartao) {
-        if (cartao.getSaldo() <= 0) {
+        if (Objects.nonNull(cartao) && cartao.getSaldo() <= 0) {
             return new ResponseEntity(new SaldoInsuficienteException(),
                     HttpStatus.UNPROCESSABLE_ENTITY);
         }
@@ -49,13 +41,36 @@ public class CartaoServiceImpl implements CartaoService {
     }
 
     @Override
-    public ResponseEntity get(String numCartao) {
+    public ResponseEntity getSaldo(String numCartao) {
 
-        Cartao cartao = cartoes.stream()
-                .filter(obj -> obj.getNumeroCartao().equals(numCartao))
-                .findAny()
-                .orElseThrow();
+        Cartao cartao = Cartao.builder().build();
 
-        return ResponseEntity.ok(cartao);
+        if (!cartoes.isEmpty()) {
+            cartao = cartoes.stream()
+                    .filter(obj -> obj.getNumeroCartao().equals(numCartao))
+                    .findAny()
+                    .orElseThrow();
+
+            return ResponseEntity.ok(cartao.getSaldo());
+        }
+
+        return ResponseEntity.notFound().build();
+    }
+
+    @Override
+    public Cartao getCartao(String numCartao) {
+
+        Cartao cartao = Cartao.builder().build();
+
+        if (!cartoes.isEmpty()) {
+            cartao = cartoes.stream()
+                    .filter(obj -> obj.getNumeroCartao().equals(numCartao))
+                    .findAny()
+                    .orElse(null);
+
+            return cartao;
+        }
+
+        return cartao;
     }
 }
