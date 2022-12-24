@@ -32,18 +32,16 @@ public class CartaoServiceImpl implements CartaoService {
         return new ResponseEntity(cartao, HttpStatus.OK);
     }
     @Override
-    public ResponseEntity validarSaldo(Cartao cartao) {
-        if (Objects.nonNull(cartao) && cartao.getSaldo() <= 0) {
-            return new ResponseEntity(new SaldoInsuficienteException(),
-                    HttpStatus.UNPROCESSABLE_ENTITY);
+    public void validarSaldo(Cartao cartao) {
+        if (Objects.nonNull(cartao) && cartao.getSaldo() == 0.0) {
+            throw new SaldoInsuficienteException();
         }
-          return null;
     }
 
     @Override
     public ResponseEntity getSaldo(String numCartao) {
 
-        Cartao cartao = Cartao.builder().build();
+        Cartao cartao;
 
         if (!cartoes.isEmpty()) {
             cartao = cartoes.stream()
@@ -67,10 +65,8 @@ public class CartaoServiceImpl implements CartaoService {
                     .filter(obj -> obj.getNumeroCartao().equals(numCartao))
                     .findAny()
                     .orElse(null);
-
             return cartao;
         }
-
         return cartao;
     }
 }

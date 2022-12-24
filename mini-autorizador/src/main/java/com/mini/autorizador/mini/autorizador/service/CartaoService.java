@@ -11,5 +11,5 @@ public interface CartaoService {
 
     Cartao getCartao(String numCartao);
 
-    ResponseEntity validarSaldo(Cartao cartao);
+    void validarSaldo(Cartao cartao);
 }

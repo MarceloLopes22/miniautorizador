@@ -36,8 +36,7 @@ public class TransacaoServiceImpl implements TransacaoService {
         if (Objects.nonNull(cartao)) {
 
             if (!transacao.getSenhaCartao().equals(cartao.getSenha())) {
-                return new ResponseEntity(new SenhaInvalidaException(),
-                        HttpStatus.UNPROCESSABLE_ENTITY);
+                throw new SenhaInvalidaException();
             }
 
             cartao.setSaldo(cartao.getSaldo() - transacaoDTO.getValor());
@@ -49,8 +48,7 @@ public class TransacaoServiceImpl implements TransacaoService {
             transacaos.add(transacao);
 
         } else {
-            return new ResponseEntity(new CartaoInexistenteException(),
-                    HttpStatus.UNPROCESSABLE_ENTITY);
+            throw new CartaoInexistenteException();
         }
 
         return new ResponseEntity(transacao, HttpStatus.OK);
