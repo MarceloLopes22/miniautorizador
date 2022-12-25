@@ -5,14 +5,14 @@ import com.mini.autorizador.mini.autorizador.service.CartaoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("cartoes")
+@RequestMapping("/v1/cartoes")
 public class CartaoController {
 
     @Autowired
@@ -24,8 +24,8 @@ public class CartaoController {
         return responseEntity;
     }
 
-    @GetMapping("/{numeroCartao}")
-    public ResponseEntity get(@RequestParam("numeroCartao") String numCartao) {
-        return cartaoService.get(numCartao);
+    @GetMapping(value = "/{numeroCartao}")//Não to conseguindo pegar o parametro do get
+    public ResponseEntity getSaldo(@PathVariable("numeroCartao") String numeroCartao) {
+        return cartaoService.getSaldo(numeroCartao);
     }
 }

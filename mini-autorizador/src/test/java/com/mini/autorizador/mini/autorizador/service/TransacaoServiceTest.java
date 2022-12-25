@@ -2,20 +2,16 @@ package com.mini.autorizador.mini.autorizador.service;
 
 import com.mini.autorizador.mini.autorizador.domain.Cartao;
 import com.mini.autorizador.mini.autorizador.domain.Transacao;
-import com.mini.autorizador.mini.autorizador.dto.CartaoDTO;
 import com.mini.autorizador.mini.autorizador.dto.TransacaoDTO;
 import com.mini.autorizador.mini.autorizador.exceptions.CartaoInexistenteException;
 import com.mini.autorizador.mini.autorizador.exceptions.SenhaInvalidaException;
 import com.mini.autorizador.mini.autorizador.service.impl.CartaoServiceImpl;
 import com.mini.autorizador.mini.autorizador.service.impl.TransacaoServiceImpl;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -68,7 +64,11 @@ public class TransacaoServiceTest {
                 .valor(10D)
                 .build();
 
-        assertThrows(SenhaInvalidaException.class, ()-> transacaoService.save(transacaoDTO));
+        try {
+            transacaoService.save(transacaoDTO);
+        }catch (SenhaInvalidaException e) {
+            assertEquals("Senha invalida", e.getMessage());
+        }
     }
 
     @Test

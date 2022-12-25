@@ -5,17 +5,14 @@ import com.mini.autorizador.mini.autorizador.dto.CartaoDTO;
 import com.mini.autorizador.mini.autorizador.exceptions.SaldoInsuficienteException;
 import com.mini.autorizador.mini.autorizador.service.impl.CartaoServiceImpl;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
-import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.doNothing;
 
 @SpringBootTest
 public class CartaoServiceTest {

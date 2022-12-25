@@ -36,7 +36,7 @@ public class TransacaoServiceImpl implements TransacaoService {
         if (Objects.nonNull(cartao)) {
 
             if (!transacao.getSenhaCartao().equals(cartao.getSenha())) {
-                throw new SenhaInvalidaException();
+                return new ResponseEntity(new SenhaInvalidaException(), HttpStatus.BAD_REQUEST);
             }
 
             cartao.setSaldo(cartao.getSaldo() - transacaoDTO.getValor());

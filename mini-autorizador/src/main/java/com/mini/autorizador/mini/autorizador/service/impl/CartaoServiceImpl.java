@@ -41,14 +41,12 @@ public class CartaoServiceImpl implements CartaoService {
     @Override
     public ResponseEntity getSaldo(String numCartao) {
 
-        Cartao cartao;
+        Cartao cartao = cartoes.stream()
+                .filter(obj -> obj.getNumeroCartao().equals(numCartao))
+                .findAny()
+                .orElse(null);
 
-        if (!cartoes.isEmpty()) {
-            cartao = cartoes.stream()
-                    .filter(obj -> obj.getNumeroCartao().equals(numCartao))
-                    .findAny()
-                    .orElseThrow();
-
+        if (Objects.nonNull(cartao)) {
             return ResponseEntity.ok(cartao.getSaldo());
         }
 

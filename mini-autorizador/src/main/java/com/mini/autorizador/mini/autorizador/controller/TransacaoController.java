@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("transacoes")
+@RequestMapping("/v1/transacoes")
 public class TransacaoController {
 
     @Autowired
