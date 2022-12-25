@@ -1,0 +1,87 @@
+{
+	"info": {
+		"_postman_id": "cb8b7798-21db-4a87-aa22-dae2cc46ff7e",
+		"name": "miniautorizador",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "23477974"
+	},
+	"item": [
+		{
+			"name": "localhost:8080/cartoes",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"numeroCartao\": \"6549873025634501\",\r\n    \"senha\": \"1234\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/v1/cartoes",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"cartoes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8080/cartoes",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/v1/cartoes?numeroCartao=6549873025634501",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"cartoes"
+					],
+					"query": [
+						{
+							"key": "numeroCartao",
+							"value": "6549873025634501"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8080/transacoes",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/cartoes?numeroCartao=6549873025634501",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"cartoes"
+					],
+					"query": [
+						{
+							"key": "numeroCartao",
+							"value": "6549873025634501"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
